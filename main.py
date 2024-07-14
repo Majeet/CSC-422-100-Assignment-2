@@ -7,6 +7,7 @@ class Pet:
         self.age = age
 
 class PetDatabase:
+    MAX_PETS = 5 # defining as variable
     # list of pets
     def __init__(self):
         self.pets = []
@@ -36,7 +37,7 @@ class PetDatabase:
 
     def add_pets(self):
         # to add pets to the list
-        while True:
+        while len(self.pets) < self.MAX_PETS: # loop breaks if we have max pets already
             pet_info = input("Add pet (name, age): ")
             if pet_info.lower() == "done":
                 break
@@ -44,10 +45,15 @@ class PetDatabase:
                 # splitting the input into name and age
                 name, age = pet_info.split()
                 age = int(age)
+                if not (1 <= age <= 20):
+                    raise ValueError("Age must be between 1 and 20 years.")
                 self.pets.append(Pet(name, age)) #creating pet and adding to the list from user input
-            except ValueError:
+            except ValueError as e:
                 # non integer age or invalid format error
-                print("Invalid input. Please enter a name and an integer age.")
+                print(f"Invalid input. Please enter a name and an integer age. {e}")
+        if len(self.pets) >= self.MAX_PETS:
+            print("Maximum number of pets reached, cannot add more pets.")
+
 
     def search_by_name(self):
         # search by name : takes name cleans it (strip and to lower case) and search in existing pets
@@ -89,6 +95,8 @@ class PetDatabase:
             if 0 <= pet_id < len(self.pets):
                 new_name = input("Enter new name: ").strip()
                 new_age = int(input("Enter new age: "))
+                if not (1 <= new_age <= 20):
+                    raise ValueError("Age must be between 1 and 20.") # adding the age exception handling on edit function
                 self.pets[pet_id].name = new_name
                 self.pets[pet_id].age = new_age
                 print("Pet details updated successfully.")
